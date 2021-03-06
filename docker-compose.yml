@@ -1,0 +1,37 @@
+version: "3"
+services:
+
+  reverse-proxy:
+    image: caddy
+    ports:
+    - 80:80
+    - 443:443
+    command: caddy reverse-proxy --to http://iam:8080
+
+  db:
+    image: postgres
+    volumes:
+    - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: iam
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_password
+
+  iam:
+    image: jboss/keycloak
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: db
+      DB_DATABASE: iam
+      DB_USER: db_user
+      DB_SCHEMA: public
+      DB_PASSWORD: db_password
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      PROXY_ADDRESS_FORWARDING: "true"
+    depends_on:
+    - db
+    restart: unless-stopped
+
+volumes:
+  db_data:
