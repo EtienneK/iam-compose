@@ -1,0 +1,3 @@
+localhost, iam.etiko.io {
+  reverse_proxy http://iam:8080
+}

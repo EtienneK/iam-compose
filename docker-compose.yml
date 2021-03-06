@@ -6,7 +6,8 @@ services:
     ports:
     - 80:80
     - 443:443
-    command: caddy reverse-proxy --to http://iam:8080
+    volumes:
+    - ./Caddyfile:/etc/caddy/Caddyfile
     restart: unless-stopped
 
   db:
